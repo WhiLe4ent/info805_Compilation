@@ -1,0 +1,105 @@
+/* package et imports */
+package fr.usmb.m1isc.compilation.tp;
+import java_cup.runtime.Symbol;
+import java.util.HashMap;
+
+/* inclusion du code */
+
+action code {:
+    // pour utilisation dans les actions (classe action)
+    // HashMap pour la gestion des variables
+    private HashMap<String,Integer> vars = new HashMap<>();
+    // gestion des erreurs d'evaluation
+    private boolean erreur = false;
+:};
+
+
+parser code {:
+    // pour le parser (redefinition de la methode reportant les erreurs d'analyse)
+    public void report_error(String message, Object info) {
+        String m = "";
+        if (info instanceof java_cup.runtime.Symbol) {
+            Symbol s = ((Symbol) info);
+            if (s != null && s.left >= 0 ) {
+                /* Ajoute le numero de ligne  et de colonne*/
+                m =  "Ligne " + (s.left+1) + ", Colonne " + (s.right+1) + " : ";
+            }
+        }
+        m = m + message;
+        System.err.println(m);
+    }
+:};
+
+ init with {:
+    //    initialisation du parser
+:};
+
+/* symboles terminaux */
+terminal PLUS, MOINS, MOINS_UNAIRE, MUL, DIV, MOD, NOT, OR, AND, PAR_G, PAR_D, SEMI, POINT, LET, INPUT, OUTPUT, IF, THEN, ELSE, WHILE, DO, EGAL, GT, GTE, SI, SIE, NIL, ERROR, EGALTEST;
+terminal Integer ENTIER;
+terminal String IDENT;
+/* non terminaux */
+non terminal Arbre program, sequence, expression,expr;
+
+precedence nonassoc OUTPUT;
+precedence right OR;
+precedence right AND;
+precedence right NOT;
+precedence nonassoc EGAL;
+precedence nonassoc GT, GTE, SI, SIE, EGALTEST;
+precedence left PLUS, MOINS;
+precedence left MUL, DIV, MOD;
+precedence left MOINS_UNAIRE;
+
+/* grammaire */
+// un pg est une sequence d'insctions terminee par point
+program ::=
+    sequence:s POINT {:
+        System.out.println(s.toString());
+        AssemblerGenerator ag = new AssemblerGenerator(s);
+    :}
+    | sequence:s {:
+        System.out.println(s.toString());
+        AssemblerGenerator ag = new AssemblerGenerator(s);
+    :}
+    ;
+
+// une sequence est une suite d'instructions separes par des point virgules
+sequence ::= expression:e1 SEMI sequence:e2 {: RESULT = new Arbre(SymbolType.SEMI, e1, e2); :}
+            | expression:e {: RESULT = e; :}
+            |
+            ;
+
+// une expession est soit une affectation ,une boucle tant que ou un si / sinon
+expression ::= expr:e {: RESULT = e; :}
+             | LET IDENT:nom EGAL expr:e        {: RESULT = new Arbre(SymbolType.LET, new Feuille(nom), e); :}
+             | WHILE expr:cond DO expression:e  {: RESULT = new Arbre(SymbolType.WHILE, cond, e); :}
+             | IF expr:cond THEN expression:a   {: RESULT = new Arbre(SymbolType.IF, cond, a); :}
+             //| IF expr:cond THEN expression:a1 ELSE expression:a2 {: RESULT = new Arbre(SymbolType.IF, a1, a2); :}
+             | error // reprise d'erreurs
+             ;
+
+// expression arithmetiques et logiques
+expr ::= NOT:op expr:e          {: RESULT = new Arbre(SymbolType.NOT, e); :}
+       | expr:e1 AND expr:e2    {: RESULT = new Arbre(SymbolType.AND, e1, e2); :}
+       | expr:e1 OR expr:e2     {: RESULT = new Arbre(SymbolType.OR, e1, e2); :}
+       | expr:e1 EGAL expr:e2   {: RESULT = new Arbre(SymbolType.EGAL, e1, e2); :}
+       | expr:e1 GT expr:e2     {: RESULT = new Arbre(SymbolType.GT, e1, e2); :}
+       | expr:e1 GTE expr:e2    {: RESULT = new Arbre(SymbolType.GTE, e1, e2); :}
+       | expr:e1 SI expr:e2     {: RESULT = new Arbre(SymbolType.SI, e1, e2); :}
+       | expr:e1 SIE expr:e2    {: RESULT = new Arbre(SymbolType.SIE, e1, e2); :}
+       | expr:e1 PLUS expr:e2   {: RESULT = new Arbre(SymbolType.PLUS, e1, e2); :}
+       | expr:e1 MOINS expr:e2  {: RESULT = new Arbre(SymbolType.MOINS, e1, e2); :}
+       | expr:e1 MUL expr:e2    {: RESULT = new Arbre(SymbolType.MUL, e1, e2); :}
+       | expr:e1 DIV expr:e2    {: RESULT = new Arbre(SymbolType.DIV, e1, e2); :}
+       | expr:e1 MOD expr:e2    {: RESULT = new Arbre(SymbolType.MOD, e1, e2); :}
+       | expr:e1 EGALTEST expr:e2    {: RESULT = new Arbre(SymbolType.EGALTEST, e1, e2); :}
+       | MOINS expr:e           {: RESULT = new Arbre(SymbolType.MOINS_UNAIRE, e); :}   %prec MOINS_UNAIRE
+       | OUTPUT expr:e          {: RESULT = new Arbre(SymbolType.OUTPUT,e); :}
+       | INPUT                  {: RESULT = new Arbre(SymbolType.INPUT); :}
+       | NIL                    {: RESULT = new Arbre(SymbolType.NIL); :}
+       | ENTIER:n               {: RESULT = new Feuille(n.toString()); :}
+       | IDENT:id               {: RESULT = new Feuille(id.toString()); :}
+       | PAR_G sequence:e PAR_D {: RESULT = e; :}
+       ;
+

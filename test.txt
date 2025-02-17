@@ -1,0 +1,9 @@
+12 + 5;             /* ceci est un commentaire */
+10 / 2 - 3;  99;    /* le point-virgule sépare les expressions à évaluer */
+/* l'évaluation donne toujours un nombre entier */
+((30 * 1) + 4) mod 2; /* opérateurs binaires */
+3 * -4;             /* attention à l'opérateur unaire */
+
+let prixHt = 200;   /* une variable prend valeur lors de sa déclaration */
+let prixTtc =  prixHt * 119 / 100;
+prixTtc + 100.
