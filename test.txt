@@ -1,6 +1,9 @@
-let a = input;
-let b = input;
-while (0 < b)
-do (let aux=(a mod b); let a=b; let b=aux );
-output a
+let x = input;
+let y = input;
+let pgcd = 
+  lambda (a, b) (
+    if (0 < b) then pgcd(b, a mod b) else a
+  );
+let z = output pgcd(x, y);
+output z
 .

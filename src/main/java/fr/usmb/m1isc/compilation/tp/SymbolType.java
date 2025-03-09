@@ -17,6 +17,7 @@ public enum SymbolType {
     LET,
     INPUT,
     OUTPUT,
+    LAMBDA,
     IF,
     THEN,
     ELSE,
@@ -25,8 +26,8 @@ public enum SymbolType {
     EGAL,
     GT,
     GTE,
-    SI,
-    SIE,
+    LT,
+    LTE,
     NIL,
 
     EGALTEST,

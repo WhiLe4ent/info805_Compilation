@@ -12,10 +12,12 @@ public class sym {
   public static final int EGAL = 23;
   public static final int INPUT = 16;
   public static final int AND = 10;
+  public static final int LT = 26;
   public static final int IDENT = 32;
   public static final int ELSE = 20;
   public static final int PLUS = 2;
   public static final int OR = 9;
+  public static final int LTE = 27;
   public static final int THEN = 19;
   public static final int WHILE = 21;
   public static final int SEMI = 13;
@@ -23,7 +25,6 @@ public class sym {
   public static final int NOT = 8;
   public static final int POINT = 14;
   public static final int ERROR = 29;
-  public static final int SIE = 27;
   public static final int PAR_D = 12;
   public static final int IF = 18;
   public static final int NIL = 28;
@@ -35,7 +36,6 @@ public class sym {
   public static final int EOF = 0;
   public static final int DIV = 6;
   public static final int EGALTEST = 30;
-  public static final int SI = 26;
   public static final int error = 1;
   public static final int LET = 15;
   public static final int OUTPUT = 17;
@@ -68,8 +68,8 @@ public class sym {
   "EGAL",
   "GT",
   "GTE",
-  "SI",
-  "SIE",
+  "LT",
+  "LTE",
   "NIL",
   "ERROR",
   "EGALTEST",

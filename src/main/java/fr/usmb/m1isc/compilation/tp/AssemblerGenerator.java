@@ -54,7 +54,7 @@ public class AssemblerGenerator {
 
         // S'il s'agit d'une boucle while
         if (data.getRacine() == SymbolType.WHILE) {
-            tmp += "debut_while_1:\n"; // TODO : voir si le 1 doit s'incrémenter à chaque while
+            tmp += "debut_while_1:\n"; 
             tmp += getCodeSegment(data.getFilsGauche()); // Condition du while
             tmp += "\tjz sortie_while_1\n";
             tmp += getCodeSegment(data.getFilsDroit()); // Contenu de la boucle
@@ -163,22 +163,22 @@ public class AssemblerGenerator {
         }
 
         // S'il s'agit d'une comparaison : "<" "<="
-        if (data.getRacine() == SymbolType.GT || data.getRacine() == SymbolType.GTE) {
+        if (data.getRacine() == SymbolType.LT || data.getRacine() == SymbolType.LTE) {
             tmp += String.format("\tmov eax, %s\n", data.getFilsGauche());
             tmp += "\tpush eax\n";
             tmp += String.format("\tmov eax, %s\n", data.getFilsDroit());
             tmp += "\tpop ebx\n";
             tmp += "\tsub eax, ebx\n";
 
-            if (data.getRacine() == SymbolType.GT) {
-                tmp += "\tjle faux_gt_1\n"; // TODO : voir si le 1 doit s'incrémenter
+            if (data.getRacine() == SymbolType.LT) {
+                tmp += "\tjle faux_gt_1\n"; 
                 tmp += "\tmov eax, 1\n";
                 tmp += "\tjmp sortie_gt_1\n";
                 tmp += "faux_gt_1:\n";
                 tmp += "\tmov eax, 0\n";
                 tmp += "sortie_gt_1:\n";
             } else {
-                tmp += "\tjle faux_gte_1\n"; // TODO : voir si le 1 doit s'incrémenter
+                tmp += "\tjle faux_gte_1\n"; 
                 tmp += "\tmov eax, 1\n";
                 tmp += "\tjmp sortie_gte_1\n";
                 tmp += "faux_gte_1:\n";
@@ -187,14 +187,14 @@ public class AssemblerGenerator {
             }
         }
         // S'il s'agit d'une comparaison : ">" ">="
-        if (data.getRacine() == SymbolType.SI || data.getRacine() == SymbolType.SIE) {
+        if (data.getRacine() == SymbolType.GT || data.getRacine() == SymbolType.GTE) {
             tmp += String.format("\tmov eax, %s\n", data.getFilsGauche());
             tmp += "\tpush eax\n";
             tmp += String.format("\tmov eax, %s\n", data.getFilsDroit());
             tmp += "\tpop ebx\n";
             tmp += "\tsub eax, ebx\n";
 
-            if (data.getRacine() == SymbolType.SI) {
+            if (data.getRacine() == SymbolType.GT) {
                 tmp += "\tjg vrai_si_1\n";
                 tmp += "faux_si_1:\n";
                 tmp += "\tmov eax, 0\n";

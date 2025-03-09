@@ -62,10 +62,10 @@ comment     = {comment1}|{comment2}
 {not}       { return new Symbol(sym.NOT, yyline, yycolumn) ;}
 "="         { return new Symbol(sym.EGAL, yyline, yycolumn) ;}
 "=="         { return new Symbol(sym.EGALTEST, yyline, yycolumn) ;}
-"<"         { return new Symbol(sym.GT, yyline, yycolumn) ;}
-"<="        { return new Symbol(sym.GTE, yyline, yycolumn) ;}
-">"         { return new Symbol(sym.SI, yyline, yycolumn) ;}
-">="        { return new Symbol(sym.SIE, yyline, yycolumn) ;}
+"<"         { return new Symbol(sym.LT, yyline, yycolumn) ;}
+"<="        { return new Symbol(sym.LTE, yyline, yycolumn) ;}
+">"         { return new Symbol(sym.GT, yyline, yycolumn) ;}
+">="        { return new Symbol(sym.GTE, yyline, yycolumn) ;}
 "("         { return new Symbol(sym.PAR_G, yyline, yycolumn) ;}
 ")"         { return new Symbol(sym.PAR_D, yyline, yycolumn) ;}
 "+"         { return new Symbol(sym.PLUS, yyline, yycolumn) ;}
